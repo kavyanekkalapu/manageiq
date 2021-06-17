@@ -28,6 +28,7 @@ class ManageIQ::Providers::InfraManager::ProvisionWorkflow < ::MiqProvisionVirtW
   end
 
   def get_source_and_targets(refresh = false)
+    p "inside"
     return @target_resource if @target_resource && refresh == false
     result = super
     return result if result.blank?
@@ -38,12 +39,17 @@ class ManageIQ::Providers::InfraManager::ProvisionWorkflow < ::MiqProvisionVirtW
     add_target(:placement_rp_name,      :respool, ResourcePool, result)
     add_target(:placement_folder_name,  :folder,  EmsFolder,    result)
 
+    p "inside result folder #{result.inspect}"
     if result[:folder_id].nil?
+        p "inside result folder #{result.inspect}"
+
       add_target(:placement_dc_name, :datacenter, EmsFolder, result)
     else
       result[:datacenter] = find_datacenter_for_ci(result[:folder], get_ems_metadata_tree(result))
       result[:datacenter_id] = result[:datacenter].id unless result[:datacenter].nil?
     end
+    p "overrrr #{result.inspect}"
+    require "byebug";byebug
 
     rails_logger('get_source_and_targets', 1)
     @target_resource = result

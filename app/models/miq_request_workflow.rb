@@ -814,7 +814,9 @@ class MiqRequestWorkflow
     result = [] if result.nil?
     result.reject! { |k, _v| !filtered_ids.include?(k) } unless filtered_ids.nil?
     result.each_with_object({}) { |s, hash| hash[s[0]] = s[1] }
+  
   end
+#   allowed_ci(:folder, [:cluster, :host, :respool])
 
   def process_filter(filter_prop, ci_klass, targets)
     rails_logger("process_filter - [#{ci_klass}]", 0)
@@ -1122,6 +1124,8 @@ class MiqRequestWorkflow
   alias_method :allowed_resource_pools, :allowed_respools
 
   def allowed_folders(_options = {})
+    p "tttttt#{allowed_ci(:folder, [:cluster, :host, :respool])}.inspect" 
+    require "byebug";byebug
     allowed_ci(:folder, [:cluster, :host, :respool])
   end
 

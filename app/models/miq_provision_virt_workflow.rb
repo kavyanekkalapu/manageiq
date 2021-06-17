@@ -33,6 +33,8 @@ class MiqProvisionVirtWorkflow < MiqProvisionWorkflow
 
     password_helper(@values, false) # Decrypt passwords in the hash for the UI
     @last_vm_id = get_value(@values[:src_vm_id]) unless initial_pass == true
+    p "5555 #{@last_vm_id}"
+    require "byebug"; byebug
 
     return if options[:skip_dialog_load] == true
 
@@ -67,7 +69,11 @@ class MiqProvisionVirtWorkflow < MiqProvisionWorkflow
   def refresh_field_values(values)
     st = Time.now
     new_src = get_value(values[:src_vm_id])
+    p "new_srccccccc #{new_src.inspect}"
+    p "new_srccccccc #{@last_vm_id.inspect}"
     vm_changed = @last_vm_id != new_src
+    p "new_srccccccc #{vm_changed}.inspect"
+    require "byebug"; byebug
 
     # Note: This makes a copy of the values hash so we have a copy of the object to modify
     @values = values
@@ -170,7 +176,8 @@ class MiqProvisionVirtWorkflow < MiqProvisionWorkflow
     if request_type == :clone_to_template
       show_dialog(:customize, :hide, "disabled")
     end
-
+p "kkkkkkkkk"
+require "byebug"; byebug
     update_field_display_values(options)
 
     update_field_display_notes_values
@@ -983,7 +990,10 @@ class MiqProvisionVirtWorkflow < MiqProvisionWorkflow
   end
 
   def update_field_display_values(options = {})
+    p "aaaaaaa"
+   require "byebug";byebug
     options_hash = setup_parameters_for_visibility_service(options)
+    p "options hash #{options_hash.inspect}"
     visibility_hash = dialog_field_visibility_service.determine_visibility(options_hash)
 
     fields do |field_name, field, _, _|
@@ -992,6 +1002,8 @@ class MiqProvisionVirtWorkflow < MiqProvisionWorkflow
   end
 
   def update_field_display_notes_values
+    p "vvvvv"
+    require "byebug";byebug
     field_note_visibility = Hash.new([])
 
     edit_or_hide = get_value(@values[:number_of_vms]).to_i > 1 ? :edit : :hide
@@ -999,8 +1011,11 @@ class MiqProvisionVirtWorkflow < MiqProvisionWorkflow
 
     edit_or_hide = @vm_snapshot_count.zero? ? :edit : :hide
     field_note_visibility[edit_or_hide] += [:linked_clone]
+    p "vvvvv #{field_note_visibility.each { |display_flag, field_names| show_fields(display_flag, field_names, :notes_display) }.inspect}"
+    require "byebug";byebug
 
     field_note_visibility.each { |display_flag, field_names| show_fields(display_flag, field_names, :notes_display) }
+
   end
 
   def setup_parameters_for_visibility_service(options)
@@ -1052,6 +1067,8 @@ class MiqProvisionVirtWorkflow < MiqProvisionWorkflow
     end
     if options[:include_datacenter] == true
       data_hash[:datacenter_name] = vm_or_template.owning_blue_folder.try(:parent_datacenter).try(:name)
+      p "data_hash[:datacenter_name] #{data_hash[:datacenter_name].inspect}"
+      require "byebug"; byebug
     end
     assign_ems_data_to_data_hash(data_hash, vm_or_template)
 

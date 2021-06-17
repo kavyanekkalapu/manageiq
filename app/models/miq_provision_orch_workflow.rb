@@ -40,11 +40,16 @@ class MiqProvisionOrchWorkflow < MiqProvisionVirtWorkflow
   end
 
   def get_source_and_targets(refresh = false)
+    # p "vvvvvvvvvvvvv"
+    # require "byebug";byebug
     return @target_resource if @target_resource && refresh == false
+    p "valuesssss-------> #{@values}"
 
     vm_id = get_value(@values[:src_vm_id])
+    p "svmmmm-->#{vm_id.inspect}"
     rails_logger('get_source_and_targets', 0)
     svm = OrchestrationTemplate.find_by(:id => vm_id)
+    p "svmmmm-->#{svm.inspect}"
 
     return @target_resource = {} if svm.nil?
 
@@ -65,6 +70,8 @@ class MiqProvisionOrchWorkflow < MiqProvisionVirtWorkflow
       result[:datacenter] = find_datacenter_for_ci(result[:folder], get_ems_metadata_tree(result))
       result[:datacenter_id] = result[:datacenter].id unless result[:datacenter].nil?
     end
+    p "aaaaaa->#{result.inspect}"
+    require"byebug";byebug
 
     rails_logger('get_source_and_targets', 1)
     @target_resource = result
